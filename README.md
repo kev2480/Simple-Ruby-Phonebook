@@ -19,7 +19,7 @@ Requirements: Ruby.
 2. Run `gem install sinatra`
 3. Run `gem install json`
 4. Run `gem install daybreak`
-5. Run 'ruby app.rb' to start the application
+5. Run `ruby app.rb` to start the application
 
 ## Usage
 
