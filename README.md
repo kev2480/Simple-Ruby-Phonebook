@@ -28,6 +28,12 @@ Navigate to `http://localhost:4567/` after running the application.
 
 The phonebook application is a simple RESTful web service.
 
+A contact within the phonebook has the following fields:
+- First Name `fname`
+- Last Name `lname`
+- Contact Number `num`
+- Address (Optional) `addr`
+
 It accepts GET/PUT/POST and DELETE HTTP requests in JSON format.
 
 ### GET `http://localhost:4567/contacts/`
