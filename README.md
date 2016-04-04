@@ -17,7 +17,7 @@ Requirements: Ruby.
 
 1. Ensure Ruby along with RubyGems is installed on your system
 2. Run `gem install sinatra`
-3. Run `gem install json`
+3. Run `gem install json` - Note if this fails you may need to install ruby-dev: `sudo yum install ruby-devel` / `sudo apt-get install ruby-dev`
 4. Run `gem install daybreak`
 5. Run `ruby app.rb` to start the application
 
