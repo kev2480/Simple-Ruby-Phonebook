@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Simple-ruby-phonebook by kev2480</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Simple-ruby-phonebook</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/kev2480/Simple-Ruby-Phonebook" class="btn">View on GitHub</a>
+      <a href="https://github.com/kev2480/Simple-Ruby-Phonebook/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/kev2480/Simple-Ruby-Phonebook/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="simple-ruby-phonebook" class="anchor" href="#simple-ruby-phonebook" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple Ruby Phonebook</h1>
+
+<p>A Simple phonebook HTTP/RESTful application.</p>
+
+<p>Created with Ruby, <a href="http://www.sinatrarb.com/">Sinatra</a> (For http routing) and <a href="http://propublica.github.io/daybreak/">Daybreak</a> (For simple Key/Value storage).</p>
+
+<p>Functionality:</p>
+
+<ul>
+<li>List all entries in the phone book.</li>
+<li>Create a new entry to the phone book.</li>
+<li>Remove an existing entry in the phone book.</li>
+<li>Update an existing entry in the phone book.</li>
+<li>Search for entries in the phone book by surname.</li>
+</ul>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Requirements: Ruby.</p>
+
+<ol>
+<li>Ensure Ruby along with RubyGems is installed on your system</li>
+<li>Run <code>gem install sinatra</code>
+</li>
+<li>Run <code>gem install json</code>
+
+<ul>
+<li>Note if this fails you may need to install ruby-dev: <code>sudo yum install ruby-devel</code> / <code>sudo apt-get install ruby-dev</code>
+</li>
+</ul>
+</li>
+<li>Run <code>gem install daybreak</code>
+</li>
+<li>Run <code>ruby app.rb</code> to start the application</li>
+</ol>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Navigate to <code>http://localhost:4567/</code> after running the application.</p>
+
+<p>The phonebook application is a simple RESTful web service.</p>
+
+<p>A contact within the phonebook has the following fields:</p>
+
+<ul>
+<li>First Name <code>fname</code>
+</li>
+<li>Last Name <code>lname</code>
+</li>
+<li>Contact Number <code>num</code>
+</li>
+<li>Address (Optional) <code>addr</code>
+</li>
+</ul>
+
+<p>It accepts GET/PUT/POST and DELETE HTTP requests in JSON format.</p>
+
+<h3>
+<a id="get-httplocalhost4567contacts" class="anchor" href="#get-httplocalhost4567contacts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GET <code>http://localhost:4567/contacts/</code>
+</h3>
+
+<p>Retrieves all contacts in JSON format.</p>
+
+<pre><code>  {  
+     "0":{  
+        "fname":"John",
+        "lname":"Smith",
+        "num":"07728372667",
+        "addr":"11 Made up road"
+     },
+     "1":{  
+        "fname":"Jimmy",
+        "lname":"James",
+        "num":"01202927262",
+        "addr":"12 North Park Road"
+     },
+     .....
+  }
+
+</code></pre>
+
+<h3>
+<a id="get-httplocalhost4567contactsid" class="anchor" href="#get-httplocalhost4567contactsid" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GET <code>http://localhost:4567/contacts/:id/</code>
+</h3>
+
+<p>Retrieves a single contact by its id number in JSON format.</p>
+
+<pre><code>  {  
+     "1":{  
+        "fname":"Jimmy",
+        "lname":"James",
+        "num":"01202927262",
+        "addr":"12 North Park Road"
+     }
+  }
+</code></pre>
+
+<h3>
+<a id="get-httplocalhost4567contactssearchsurname" class="anchor" href="#get-httplocalhost4567contactssearchsurname" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GET <code>http://localhost:4567/contacts/search/:surname/</code>
+</h3>
+
+<p>Searches contacts based on their surname. I.e. <code>http://localhost:4567/contacts/search/smith/</code> will return:</p>
+
+<pre><code>  {  
+     "4":{  
+        "fname":"Jennifer",
+        "lname":"Smith",
+        "num":"102903874756",
+        "addr":"45 Smith Road"
+     }
+  }
+</code></pre>
+
+<h3>
+<a id="put-httplocalhost4567contactsid" class="anchor" href="#put-httplocalhost4567contactsid" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PUT <code>http://localhost:4567/contacts/:id/</code>
+</h3>
+
+<p>Updates a current contact by its id number. Below is an example on the required JSON.</p>
+
+<pre><code>  {
+      "fname":"Jimmy",
+      "lname":"James",
+      "num":"01202558996",
+      "addr":"12 North Park Road"
+  }
+</code></pre>
+
+<p>Note, the 'addr' field is optional.</p>
+
+<h3>
+<a id="post-httplocalhost4567contacts" class="anchor" href="#post-httplocalhost4567contacts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>POST <code>http://localhost:4567/contacts/</code>
+</h3>
+
+<p>Similar to PUT but creates a new contact rather than updating.</p>
+
+<pre><code>  {
+      "fname":"Laura",
+      "lname":"Smith",
+      "num":"02356987456",
+      "addr": "45 Smith Road"
+  }
+</code></pre>
+
+<h3>
+<a id="delete-httplocalhost4567contactsid" class="anchor" href="#delete-httplocalhost4567contactsid" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>DELETE <code>http://localhost:4567/contacts/:id/</code>
+</h3>
+
+<p>Deletes a contact by its id number</p>
+
+<h2>
+<a id="history" class="anchor" href="#history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>History</h2>
+
+<ul>
+<li>4th April 2016: Initial deployment.</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/kev2480/Simple-Ruby-Phonebook">Simple-ruby-phonebook</a> is maintained by <a href="https://github.com/kev2480">kev2480</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
