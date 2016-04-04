@@ -25,7 +25,6 @@ get '/contacts/?' do
   db.close #Make sure to close
   status 200
   db_hash.to_json #Convert to JSON
-
 end
 
 #Get contact by id
@@ -33,15 +32,12 @@ get '/contacts/:id/?' do
   db = Daybreak::DB.new "contacts.db"
   db.load
   db_hash = Hash.new
-
   db.each do |id,contact| #Iterate through and add if present
     if id == params[:id]
       db_hash[id] = contact
     end
   end
-
   db.close
-
   if db_hash.length < 1
     redirect to('/error404')
   else
@@ -55,7 +51,6 @@ get '/contacts/search/:surname/?' do
   db = Daybreak::DB.new "contacts.db"
   db.load
   db_hash = Hash.new
-
   db.each do |id,contact| #Iterate through and add if present
     c = contact_from_hash(contact) #Create contact from hash
     if c.lname.downcase == params[:surname].downcase
@@ -71,33 +66,26 @@ get '/contacts/search/:surname/?' do
     status 200
     db_hash.to_json
   end
-
 end
 
 #New contact
 post '/contacts/?' do
-
   begin
     json_hash = JSON.parse(request.body.read)
-
     if (json_hash.has_key? 'fname')&& (json_hash.has_key? 'lname') && (json_hash.has_key? 'num')
       #Get next available id
       id = getNextId
 
       db = Daybreak::DB.new "contacts.db"
-
       #Create and contact and add to db
       contact = Contact.new(json_hash['fname'], json_hash['lname'], json_hash['num'], json_hash['addr'])
       db.set! id, contact.to_hash
       db.flush
       db.close
-
       status 201
-
     else
       status 400
     end
-
   rescue #Catch Faulty JSON here
     status 400
   end
@@ -105,7 +93,6 @@ end
 
 #Update by ID
 put '/contacts/:id/?' do
-
   id = params[:id]
   db = Daybreak::DB.new "contacts.db"
 
@@ -115,7 +102,6 @@ put '/contacts/:id/?' do
     if db.keys.include? id
       #Contact there, update.
       if (json_hash.has_key? 'fname') && (json_hash.has_key? 'lname') && (json_hash.has_key? 'num')
-
         #Create and contact and add to db
         contact = Contact.new(json_hash['fname'], json_hash['lname'], json_hash['num'], json_hash['addr'])
         db.set! id, contact.to_hash
@@ -128,12 +114,10 @@ put '/contacts/:id/?' do
       db.flush
       db.close
       redirect to('/error404')
-
     end
   rescue #Catch Faulty JSON here
     status 400
   end
-
   db.flush
   db.close
 end
@@ -159,7 +143,7 @@ def contact_from_hash(contact)
   return Contact.new(contact['fname'], contact['lname'], contact['num'], contact['addr'])
 end
 
-
+#Get next available id from contacts
 def getNextId
   db = Daybreak::DB.new "contacts.db"
 
@@ -177,7 +161,6 @@ def getNextId
   end
 
   db.close
-
   return tempId
 end
 
@@ -192,6 +175,7 @@ class Contact
     @addr  = addr
   end
 
+  #Turn to hash 
   def to_hash
     hash = {}
     instance_variables.each {|var| hash[var.to_s.delete("@")] = instance_variable_get(var) }
