@@ -15,7 +15,7 @@ Functionality:
 
 Requirements: Ruby.
 
-1. Ensure Ruby is installed on your system
+1. Ensure Ruby along with RubyGems is installed on your system
 2. Run `gem install sinatra`
 3. Run `gem install json`
 4. Run `gem install daybreak`
