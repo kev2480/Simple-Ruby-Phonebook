@@ -1,4 +1,5 @@
 # routing.rb
+require 'rubygems'
 require 'sinatra'
 require 'json'
 require 'daybreak'
@@ -175,7 +176,7 @@ class Contact
     @addr  = addr
   end
 
-  #Turn to hash 
+  #Turn to hash
   def to_hash
     hash = {}
     instance_variables.each {|var| hash[var.to_s.delete("@")] = instance_variable_get(var) }
