@@ -22,7 +22,7 @@ get '/contacts/?' do
   db = openDb  #Define Db
   db_hash = Hash.new  #Create new hash to load in contacts from db
   db.each { |id,contact| db_hash[id] = contact } #Iterate through entries
-  closeDb(db) #Close database
+  closeDb(db) #Close daybreak
   status 200
   db_hash.to_json #Convert to JSON
 end
@@ -36,7 +36,7 @@ get '/contacts/:id/?' do
       db_hash[id] = contact
     end
   end
-  closeDb(db) #Close database
+  closeDb(db) #Close daybreak
   if db_hash.length < 1
     redirect to('/error404')
   else
@@ -55,7 +55,7 @@ get '/contacts/search/:surname/?' do
       db_hash[id] = contact
     end
   end
-  closeDb(db) #Close database
+  closeDb(db) #Close daybreak
   if db_hash.length < 1
     redirect to('/error404')
   else
@@ -75,7 +75,7 @@ post '/contacts/?' do
       #Create and contact and add to db
       contact = Contact.new(json_hash['fname'], json_hash['lname'], json_hash['num'], json_hash['addr'])
       db.set! id, contact.to_hash
-      closeDb(db) #Close database
+      closeDb(db) #Close daybreak
       status 201
     else
       status 400
@@ -104,13 +104,13 @@ put '/contacts/:id/?' do
       end
     else
       #Contact does not exist
-      closeDb(db) #Close database
+      closeDb(db) #Close daybreak
       redirect to('/error404')
     end
   rescue #Catch Faulty JSON here
     status 400
   end
-  closeDb(db) #Close database
+  closeDb(db) #Close daybreak
 end
 
 #Remove by ID
@@ -119,9 +119,9 @@ delete '/contacts/:id/?' do
   if db.has_key?(params[:id])
     db.delete!(params[:id])
     status 204
-    closeDb(db) #Close database
+    closeDb(db) #Close daybreak
   else
-    closeDb(db) #Close database
+    closeDb(db) #Close daybreak
     redirect to('/error404')
   end
 end
@@ -144,14 +144,14 @@ def getNextId
       end
   end
 
-  closeDb(db) #Close database
+  closeDb(db) #Close daybreak
   return tempId
 end
 
 #Return a new instance of Daybreak
 def openDb
   db = Daybreak::DB.new "contacts.db"  #Define Db
-  db.load  #load Database file
+  db.load  #load daybreak file
   return db
 end
 
