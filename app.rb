@@ -1,4 +1,4 @@
-# routing.rb
+# app.rb
 require 'rubygems'
 require 'sinatra'
 require 'json'
@@ -19,26 +19,24 @@ end
 
 #List all contacts
 get '/contacts/?' do
-  db = Daybreak::DB.new "contacts.db"  #Define Db
-  db.load  #load Database file
+  db = openDb  #Define Db
   db_hash = Hash.new  #Create new hash to load in contacts from db
   db.each { |id,contact| db_hash[id] = contact } #Iterate through entries
-  db.close #Make sure to close
+  closeDb(db) #Close database
   status 200
   db_hash.to_json #Convert to JSON
 end
 
 #Get contact by id
 get '/contacts/:id/?' do
-  db = Daybreak::DB.new "contacts.db"
-  db.load
+  db = openDb  #Define Db
   db_hash = Hash.new
   db.each do |id,contact| #Iterate through and add if present
     if id == params[:id]
       db_hash[id] = contact
     end
   end
-  db.close
+  closeDb(db) #Close database
   if db_hash.length < 1
     redirect to('/error404')
   else
@@ -49,8 +47,7 @@ end
 
 #Search by surname
 get '/contacts/search/:surname/?' do
-  db = Daybreak::DB.new "contacts.db"
-  db.load
+  db = openDb  #Define Db
   db_hash = Hash.new
   db.each do |id,contact| #Iterate through and add if present
     c = contact_from_hash(contact) #Create contact from hash
@@ -58,9 +55,7 @@ get '/contacts/search/:surname/?' do
       db_hash[id] = contact
     end
   end
-
-  db.close
-
+  closeDb(db) #Close database
   if db_hash.length < 1
     redirect to('/error404')
   else
@@ -76,13 +71,11 @@ post '/contacts/?' do
     if (json_hash.has_key? 'fname')&& (json_hash.has_key? 'lname') && (json_hash.has_key? 'num')
       #Get next available id
       id = getNextId
-
-      db = Daybreak::DB.new "contacts.db"
+      db = openDb  #Define Db
       #Create and contact and add to db
       contact = Contact.new(json_hash['fname'], json_hash['lname'], json_hash['num'], json_hash['addr'])
       db.set! id, contact.to_hash
-      db.flush
-      db.close
+      closeDb(db) #Close database
       status 201
     else
       status 400
@@ -95,8 +88,7 @@ end
 #Update by ID
 put '/contacts/:id/?' do
   id = params[:id]
-  db = Daybreak::DB.new "contacts.db"
-
+  db = openDb  #Define Db
   begin
     json_hash = JSON.parse(request.body.read)
 
@@ -112,29 +104,24 @@ put '/contacts/:id/?' do
       end
     else
       #Contact does not exist
-      db.flush
-      db.close
+      closeDb(db) #Close database
       redirect to('/error404')
     end
   rescue #Catch Faulty JSON here
     status 400
   end
-  db.flush
-  db.close
+  closeDb(db) #Close database
 end
 
 #Remove by ID
 delete '/contacts/:id/?' do
-  db = Daybreak::DB.new "contacts.db"
-
+  db = openDb  #Define Db
   if db.has_key?(params[:id])
     db.delete!(params[:id])
     status 204
-    db.flush
-    db.close
+    closeDb(db) #Close database
   else
-    db.flush
-    db.close
+    closeDb(db) #Close database
     redirect to('/error404')
   end
 end
@@ -146,13 +133,9 @@ end
 
 #Get next available id from contacts
 def getNextId
-  db = Daybreak::DB.new "contacts.db"
-
-  db.load
+  db = openDb  #Define Db
   db_hash = Hash.new
-
   tempId = 0
-
   db.each do |id,contact| #Iterate through and add if present
       if Integer(id) > tempId
         tempId = Integer(id) + 1
@@ -161,8 +144,21 @@ def getNextId
       end
   end
 
-  db.close
+  closeDb(db) #Close database
   return tempId
+end
+
+#Return a new instance of Daybreak
+def openDb
+  db = Daybreak::DB.new "contacts.db"  #Define Db
+  db.load  #load Database file
+  return db
+end
+
+#Flush and close Daybreak
+def closeDb(db)
+  db.flush
+  db.close
 end
 
 #Contact class
